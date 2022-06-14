@@ -4,12 +4,14 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <numeric>
 
 namespace lms {
     Table::Table() {
         minColumnWidth = 2;
         maxColumnWidth = 250;
-        surplusColWidth = 2;
+        surplusColWidth = 0;
+        spacing = 5; // TODO: Add assertions to ensure spacing is an odd number
     }
 
     Table::~Table() = default;
@@ -39,15 +41,33 @@ namespace lms {
         assert(!columns.empty() && "Columns not set");
 
         std::ostringstream oss;
+
+        uint16_t tableWidth =
+                std::accumulate(columnWidths.begin(), columnWidths.end(), 0) + spacing * columns.size() + spacing
+                - (spacing / 2) * 2;
+
+        oss << std::setw(tableWidth) << std::setfill('-') << "" << std::endl;
+        oss << std::setfill(' ');
+
         EchoEntry(oss, columns);
         oss << std::endl;
 
+        // Null Entry to generate chars
+        oss << std::setfill('-');
+        EchoEntry(oss, std::list<std::string>(columns.size(), ""));
         oss << std::endl;
+        oss << std::setfill(' ');
+        //
+
 
         for (const auto &row: rows) {
             EchoEntry(oss, row);
             oss << std::endl;
         }
+
+        oss << std::setw(tableWidth) << std::setfill('-') << "" << std::endl;
+        oss << std::setfill(' ');
+
         return oss.str();
     }
 
@@ -58,16 +78,35 @@ namespace lms {
         CalculateColumnWidths();
     }
 
+    void Table::EchoSpacing(std::ostream &os, SpacingStrategy strategy) const {
+        switch (strategy) {
+            case SpacingStrategy::First:
+                os << std::setw(1) << "|";
+                os << std::setw(spacing / 2) << "";
+                break;
+            case SpacingStrategy::Default:
+                os << std::setw(spacing / 2) << "";
+                os << std::setw(1) << "|";
+                os << std::setw(spacing / 2) << "";
+                break;
+            case SpacingStrategy::Last:
+                os << std::setw(spacing / 2) << "";
+                os << std::setw(1) << "|";
+                break;
+        }
+    }
+
     void Table::EchoEntry(std::ostream &os, const std::list<std::string> &entry) const {
         assert(!entry.empty() && "Entry is empty");
         assert(columnWidths.size() == entry.size() && "Column widths size does not match entry size");
 
-
         size_t colIndex = 0;
         for (const auto &value: entry) {
+            EchoSpacing(os, !colIndex ? Table::SpacingStrategy::First : Table::SpacingStrategy::Default);
             os << std::setw(columnWidths[colIndex++]) << value;
-            os << std::setw(2) << "  ";
         }
+
+        EchoSpacing(os, Table::SpacingStrategy::Last);
     }
 
     // TODO: Needs optimizations or think of a better architecture.
@@ -98,10 +137,10 @@ namespace lms {
             columnWidths.push_back(std::max(maxSize, minColumnWidth));
         }
 
-        std::cout << "Column widths: " << std::endl;
-        for (auto &width: columnWidths) {
-            std::cout << static_cast<uint16_t>(width) << " ";
-        }
-        std::cout << std::endl;
+//        std::cout << "Column widths: " << std::endl;
+//        for (auto &width: columnWidths) {
+//            std::cout << static_cast<uint16_t>(width) << " ";
+//        }
+//        std::cout << std::endl;
     }
 }

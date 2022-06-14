@@ -13,6 +13,6 @@ int main() {
     table.AddRow({"4", "The Great Gatsby", "F. Scott Fitzgerald"});
     table.AddRow({"5", "The Grapes of Wrath", "John Steinbeck"});
 
-    std::cout << "Table: " << std::endl << std::endl << table << std::endl;
+    std::cout << "Books:" << std::endl << std::endl << table << std::endl;
     return 0;
 }

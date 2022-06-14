@@ -27,7 +27,15 @@ namespace lms {
         typedef uint8_t ColumnWidth;
 
     protected:
+        enum class SpacingStrategy {
+            First,
+            Default,
+            Last
+        };
+
         void EchoEntry(std::ostream &os, const std::list<std::string> &entry) const;
+
+        void EchoSpacing(std::ostream &os, SpacingStrategy strategy = Table::SpacingStrategy::Default) const;
 
         void CalculateColumnWidths();
 
@@ -40,7 +48,8 @@ namespace lms {
 
         ColumnWidth minColumnWidth;
         ColumnWidth maxColumnWidth;
-        ColumnWidth surplusColWidth;
+        uint8_t surplusColWidth;
+        uint8_t spacing;
     };
 }
 
