@@ -6,52 +6,47 @@
 #include <vector>
 
 namespace lms {
-    class Table {
-    public:
-        Table();
+class Table {
+   public:
+    Table();
 
-        ~Table();
+    ~Table();
 
-        void SetColumns(const std::list<std::string> &columnNames);
+    void SetColumns(const std::list<std::string> &columnNames);
 
-        void AddRow(const std::list<std::string> &row);
+    void AddRow(const std::list<std::string> &row);
 
-        [[nodiscard]] std::list<std::string> GetColumns() const;
+    [[nodiscard]] std::list<std::string> GetColumns() const;
 
-        [[nodiscard]] std::list<std::list<std::string>> GetRows() const;
+    [[nodiscard]] std::list<std::list<std::string>> GetRows() const;
 
-        [[nodiscard]] std::string GetFormattedString() const;
+    [[nodiscard]] std::string GetFormattedString() const;
 
-        friend std::ostream &operator<<(std::ostream &os, const lms::Table &table);
+    friend std::ostream &operator<<(std::ostream &os, const lms::Table &table);
 
-        typedef uint8_t ColumnWidth;
+    typedef uint8_t ColumnWidth;
 
-    protected:
-        enum class SpacingStrategy {
-            First,
-            Default,
-            Last
-        };
+   protected:
+    enum class SpacingStrategy { First, Default, Last };
 
-        void EchoEntry(std::ostream &os, const std::list<std::string> &entry) const;
+    void EchoEntry(std::ostream &os, const std::list<std::string> &entry) const;
 
-        void EchoSpacing(std::ostream &os, SpacingStrategy strategy = Table::SpacingStrategy::Default) const;
+    void EchoSpacing(std::ostream &os, Table::SpacingStrategy strategy = Table::SpacingStrategy::Default) const;
 
-        void CalculateColumnWidths();
+    void CalculateColumnWidths();
 
-    private:
-        std::list<std::string> columns;
+   private:
+    std::list<std::string> columns;
 
-        std::list<std::list<std::string>> rows;
+    std::list<std::list<std::string>> rows;
 
-        std::vector<Table::ColumnWidth> columnWidths;
+    std::vector<Table::ColumnWidth> columnWidths;
 
-        ColumnWidth minColumnWidth;
-        ColumnWidth maxColumnWidth;
-        uint8_t surplusColWidth;
-        uint8_t spacing;
-    };
-}
+    ColumnWidth minColumnWidth;
+    ColumnWidth maxColumnWidth;
+    uint8_t surplusColWidth;
+    uint8_t spacing;
+};
+}  // namespace lms
 
-
-#endif //LMS_TABLE_HPP
+#endif  // LMS_TABLE_HPP
