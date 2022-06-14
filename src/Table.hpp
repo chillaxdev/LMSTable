@@ -8,7 +8,11 @@
 namespace lms {
 class Table {
    public:
+    enum class Style { Default, TakeVos };
+
     Table();
+
+    explicit Table(Table::Style style);
 
     ~Table();
 
@@ -37,6 +41,10 @@ class Table {
 
     void CalculateColumnWidths();
 
+    bool IsDefaultStyle() const;
+
+    bool IsTakeVosStyle() const;
+
    private:
     std::list<std::string> columns;
 
@@ -49,6 +57,7 @@ class Table {
     uint8_t surplusColWidth;
     uint8_t spacing;
     mutable uint8_t cornerChar;
+    Table::Style style;
 };
 }  // namespace lms
 

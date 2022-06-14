@@ -14,7 +14,10 @@ Table::Table() {
     surplusColWidth = 0;
     spacing = 5;  // TODO: Add assertions to ensure spacing is an odd number
     cornerChar = '|';
+    style = Table::Style::Default;
 }
+
+Table::Table(Table::Style tableStyle) : Table() { style = tableStyle; }
 
 Table::~Table() = default;
 
@@ -44,7 +47,9 @@ std::string Table::GetFormattedString() const {
 
     std::ostringstream oss;
 
-    EchoLine(oss);
+    if (IsDefaultStyle()) {
+        EchoLine(oss);
+    }
 
     EchoEntry(oss, columns);
     oss << std::endl;
@@ -55,7 +60,9 @@ std::string Table::GetFormattedString() const {
         EchoEntry(oss, row);
         oss << std::endl;
 
-        EchoLine(oss);
+        if (IsDefaultStyle()) {
+            EchoLine(oss);
+        }
     }
 
     return oss.str();
@@ -80,8 +87,10 @@ void Table::EchoLine(std::ostream &os) const {
 void Table::EchoSpacing(std::ostream &os, Table::SpacingStrategy strategy) const {
     switch (strategy) {
         case Table::SpacingStrategy::First:
-            os << std::setw(1) << cornerChar;
-            os << std::setw(spacing / 2) << "";
+            if (IsDefaultStyle()) {
+                os << std::setw(1) << cornerChar;
+                os << std::setw(spacing / 2) << "";
+            }
             break;
         case Table::SpacingStrategy::Default:
             os << std::setw(spacing / 2) << "";
@@ -105,7 +114,9 @@ void Table::EchoEntry(std::ostream &os, const std::list<std::string> &entry) con
         os << std::setw(columnWidths[colIndex++]) << value;
     }
 
-    EchoSpacing(os, Table::SpacingStrategy::Last);
+    if (IsDefaultStyle()) {
+        EchoSpacing(os, Table::SpacingStrategy::Last);
+    }
 }
 
 // TODO: Needs optimizations or think of a better architecture.
@@ -142,4 +153,8 @@ void Table::CalculateColumnWidths() {
     //        }
     //        std::cout << std::endl;
 }
+
+bool Table::IsDefaultStyle() const { return style == Table::Style::Default; }
+
+bool Table::IsTakeVosStyle() const { return style == Table::Style::TakeVos; }
 }  // namespace lms
