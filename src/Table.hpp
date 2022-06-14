@@ -33,6 +33,8 @@ class Table {
 
     void EchoSpacing(std::ostream &os, Table::SpacingStrategy strategy = Table::SpacingStrategy::Default) const;
 
+    void EchoLine(std::ostream &os) const;
+
     void CalculateColumnWidths();
 
    private:
@@ -46,6 +48,7 @@ class Table {
     ColumnWidth maxColumnWidth;
     uint8_t surplusColWidth;
     uint8_t spacing;
+    mutable uint8_t cornerChar;
 };
 }  // namespace lms
 

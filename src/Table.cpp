@@ -13,6 +13,7 @@ Table::Table() {
     maxColumnWidth = 250;
     surplusColWidth = 0;
     spacing = 5;  // TODO: Add assertions to ensure spacing is an odd number
+    cornerChar = '|';
 }
 
 Table::~Table() = default;
@@ -43,29 +44,19 @@ std::string Table::GetFormattedString() const {
 
     std::ostringstream oss;
 
-    uint16_t tableWidth = std::accumulate(columnWidths.begin(), columnWidths.end(), 0) + spacing * columns.size() +
-                          spacing - (spacing / 2) * 2;
-
-    oss << std::setw(tableWidth) << std::setfill('-') << "" << std::endl;
-    oss << std::setfill(' ');
+    EchoLine(oss);
 
     EchoEntry(oss, columns);
     oss << std::endl;
 
-    // Null Entry to generate chars
-    oss << std::setfill('-');
-    EchoEntry(oss, std::list<std::string>(columns.size(), ""));
-    oss << std::endl;
-    oss << std::setfill(' ');
-    //
+    EchoLine(oss);
 
     for (const auto &row : rows) {
         EchoEntry(oss, row);
         oss << std::endl;
-    }
 
-    oss << std::setw(tableWidth) << std::setfill('-') << "" << std::endl;
-    oss << std::setfill(' ');
+        EchoLine(oss);
+    }
 
     return oss.str();
 }
@@ -77,20 +68,29 @@ void Table::AddRow(const std::list<std::string> &rowValues) {
     CalculateColumnWidths();
 }
 
+void Table::EchoLine(std::ostream &os) const {
+    cornerChar = '+';
+    os << std::setfill('-');
+    EchoEntry(os, std::list<std::string>(columns.size(), ""));
+    os << std::endl;
+    os << std::setfill(' ');
+    cornerChar = '|';
+}
+
 void Table::EchoSpacing(std::ostream &os, Table::SpacingStrategy strategy) const {
     switch (strategy) {
         case Table::SpacingStrategy::First:
-            os << std::setw(1) << "|";
+            os << std::setw(1) << cornerChar;
             os << std::setw(spacing / 2) << "";
             break;
         case Table::SpacingStrategy::Default:
             os << std::setw(spacing / 2) << "";
-            os << std::setw(1) << "|";
+            os << std::setw(1) << cornerChar;
             os << std::setw(spacing / 2) << "";
             break;
         case Table::SpacingStrategy::Last:
             os << std::setw(spacing / 2) << "";
-            os << std::setw(1) << "|";
+            os << std::setw(1) << cornerChar;
             break;
     }
 }
