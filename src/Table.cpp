@@ -91,6 +91,9 @@ void Table::EchoSpacing(std::ostream &os, Table::SpacingStrategy strategy) const
                 os << std::setw(1) << cornerChar;
                 os << std::setw(spacing / 2) << "";
             }
+            if (IsTakeVosStyle()) {
+                os << std::setw(spacing / 2) << "";
+            }
             break;
         case Table::SpacingStrategy::Default:
             os << std::setw(spacing / 2) << "";
@@ -98,8 +101,13 @@ void Table::EchoSpacing(std::ostream &os, Table::SpacingStrategy strategy) const
             os << std::setw(spacing / 2) << "";
             break;
         case Table::SpacingStrategy::Last:
-            os << std::setw(spacing / 2) << "";
-            os << std::setw(1) << cornerChar;
+            if (IsDefaultStyle()) {
+                os << std::setw(spacing / 2) << "";
+                os << std::setw(1) << cornerChar;
+            }
+            if (IsTakeVosStyle()) {
+                os << std::setw(spacing / 2) << "";
+            }
             break;
     }
 }
@@ -114,9 +122,7 @@ void Table::EchoEntry(std::ostream &os, const std::list<std::string> &entry) con
         os << std::setw(columnWidths[colIndex++]) << value;
     }
 
-    if (IsDefaultStyle()) {
-        EchoSpacing(os, Table::SpacingStrategy::Last);
-    }
+    EchoSpacing(os, Table::SpacingStrategy::Last);
 }
 
 // TODO: Needs optimizations or think of a better architecture.

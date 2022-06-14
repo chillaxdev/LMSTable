@@ -5,7 +5,7 @@
 using namespace lms;
 
 int main() {
-    // Table table();
+    // Table table;
     Table table(Table::Style::TakeVos);
     table.SetColumns({"No.", "Name", "Author"});
 
