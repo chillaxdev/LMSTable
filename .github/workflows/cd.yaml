@@ -1,0 +1,35 @@
+name: Continuous Delivery
+
+on: push
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: chillaxdev/helpful-workflows/env/init@main
+        with:
+          file: delivery.json
+        id: env
+      - name: Create Dist
+        run: |
+          mkdir dist
+          cp src/Table.hpp dist/LMSTable.hpp
+          cp src/Table.cpp dist/LMSTable.cpp
+      - name: Patch License with version
+        run: sed -i '0,/#####/s//${{ steps.env.outputs.version }}/' license-embed
+      - run: cat license-embed
+      - name: Embed License
+        run: |
+          echo "Embedding on LMSTable.hpp"
+          sed -i -e '1i\ ' dist/LMSTable.hpp
+          sed -i -e '1r license-embed' dist/LMSTable.hpp
+          sed -i '1d' dist/LMSTable.hpp
+          echo "Embedding on LMSTable.cpp"
+          sed -i -e '1i\ ' dist/LMSTable.cpp
+          sed -i -e '1r license-embed' dist/LMSTable.cpp
+          sed -i '1d' dist/LMSTable.cpp
+      - uses: actions/upload-artifact@v3
+        with:
+          name: LMSTable-${{ steps.env.outputs.version_full }}
+          path: dist

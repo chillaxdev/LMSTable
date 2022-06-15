@@ -6,13 +6,14 @@
 #include <vector>
 
 namespace lms {
+
 class Table {
    public:
     enum class Style { Default, TakeVos };
 
     Table();
 
-    explicit Table(Table::Style style);
+    explicit Table(Table::Style tableStyle);
 
     ~Table();
 
@@ -20,9 +21,9 @@ class Table {
 
     void AddRow(const std::list<std::string> &row);
 
-    [[nodiscard]] std::list<std::string> GetColumns() const;
+    [[maybe_unused]] [[nodiscard]] std::list<std::string> GetColumns() const;
 
-    [[nodiscard]] std::list<std::list<std::string>> GetRows() const;
+    [[maybe_unused]] [[nodiscard]] std::list<std::list<std::string>> GetRows() const;
 
     [[nodiscard]] std::string GetFormattedString() const;
 
@@ -59,6 +60,7 @@ class Table {
     mutable uint8_t cornerChar;
     Table::Style style;
 };
+
 }  // namespace lms
 
 #endif  // LMS_TABLE_HPP

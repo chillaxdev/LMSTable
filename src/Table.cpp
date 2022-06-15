@@ -8,6 +8,7 @@
 #include <sstream>
 
 namespace lms {
+
 Table::Table() {
     minColumnWidth = 2;
     maxColumnWidth = 250;
@@ -27,12 +28,12 @@ void Table::SetColumns(const std::list<std::string> &columnNames) {
     CalculateColumnWidths();
 }
 
-std::list<std::string> Table::GetColumns() const {
+[[maybe_unused]] std::list<std::string> Table::GetColumns() const {
     assert(!columns.empty() && "Columns not set");
     return columns;
 }
 
-std::list<std::list<std::string>> Table::GetRows() const {
+[[maybe_unused]] std::list<std::list<std::string>> Table::GetRows() const {
     assert(!columns.empty() && "Columns not set");
     return rows;
 }
@@ -132,7 +133,6 @@ void Table::CalculateColumnWidths() {
     columnWidths.clear();
 
     std::vector<std::vector<std::string>> entries;
-
     entries.emplace_back(columns.begin(), columns.end());
 
     for (auto it = rows.begin(); it != rows.end(); ++it) {
@@ -151,16 +151,10 @@ void Table::CalculateColumnWidths() {
         Table::ColumnWidth maxSize = *std::max_element(columnSizes.begin(), columnSizes.end());
         columnWidths.push_back(std::max(maxSize, minColumnWidth));
     }
-
-    //// Debug
-    //        std::cout << "Column widths: " << std::endl;
-    //        for (auto &width: columnWidths) {
-    //            std::cout << static_cast<uint16_t>(width) << " ";
-    //        }
-    //        std::cout << std::endl;
 }
 
 bool Table::IsDefaultStyle() const { return style == Table::Style::Default; }
 
 bool Table::IsTakeVosStyle() const { return style == Table::Style::TakeVos; }
+
 }  // namespace lms
