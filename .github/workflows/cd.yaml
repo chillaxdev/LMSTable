@@ -29,7 +29,18 @@ jobs:
           sed -i -e '1i\ ' dist/LMSTable.cpp
           sed -i -e '1r license-embed' dist/LMSTable.cpp
           sed -i '1d' dist/LMSTable.cpp
+          sed -i '0,/#include "Table.hpp"/s//#include "LMSTable.hpp"/' dist/LMSTable.cpp
+      - name: Create hcc variant
+        run: |
+          mkdir hcc
+          cp dist/LMSTable.hpp hcc/LMSTable.h
+          cp dist/LMSTable.cpp hcc/LMSTable.cc
+          sed -i '0,/#include "LMSTable.hpp"/s//#include "LMSTable.h"/' hcc/LMSTable.cc
       - uses: actions/upload-artifact@v3
         with:
           name: LMSTable-${{ steps.env.outputs.version_full }}
           path: dist
+      - uses: actions/upload-artifact@v3
+        with:
+          name: LMSTable-hcc-${{ steps.env.outputs.version_full }}
+          path: hcc
